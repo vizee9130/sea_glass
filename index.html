@@ -1,0 +1,694 @@
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바다유리 목걸이 만들기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            scroll-behavior: smooth;
+        }
+        /* Full-screen section styling */
+        .section-full {
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box;
+            position: relative;
+        }
+        /* Overlay for text readability on background images */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* Dark overlay for text readability */
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5); /* Subtle inner shadow for depth */
+        }
+        /* Canvas specific styling for the interactive section */
+        canvas {
+            background-color: transparent;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            touch-action: none; /* Disable default touch actions like pan/zoom */
+            cursor: grab; /* Cursor for dragging */
+        }
+        canvas.grabbing {
+            cursor: grabbing;
+        }
+        /* Custom scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .scroll-indicator span {
+            font-size: 0.875rem; /* text-sm */
+            margin-bottom: 0.5rem;
+        }
+        .scroll-arrow {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid white;
+            animation: bounce 1s infinite; /* Simple bounce animation */
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Navigation Bar Styling */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        .navbar-hidden {
+            transform: translateY(-100%);
+        }
+        .navbar-item {
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .navbar-item:hover {
+            background-color: #e2e8f0;
+            color: #2563eb;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-blue-100 to-blue-300">
+
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="navbar flex justify-center items-center py-2 px-4">
+        <a class="navbar-item" onclick="scrollToSection('hero-section')">소개</a>
+        <a class="navbar-item" onclick="scrollToSection('sea-glass-story-section')">바다유리 이야기</a>
+        <a class="navbar-item" onclick="scrollToSection('what-is-seaglass-section')">바다유리란?</a>
+        <a class="navbar-item" onclick="scrollToSection('interactive-seaglass-section')">바다유리 탄생 체험</a>
+        <a class="navbar-item" onclick="scrollToSection('environmental-impact-section')">환경 오염의 흔적</a>
+        <a class="navbar-item" onclick="scrollToSection('upcycling-section')">업사이클링</a>
+        <a class="navbar-item" onclick="scrollToSection('how-to-make-necklace-section')">만드는 방법</a>
+        <a class="navbar-item" onclick="scrollToSection('protect-ocean-section')">바다 지키기 & 퀴즈</a>
+    </nav>
+
+    <!-- Section 1: Hero Section - Introduction to Sea Glass Necklace Making -->
+    <section id="hero-section" class="section-full bg-gradient-to-br from-blue-600 to-indigo-800">
+        <div class="overlay"></div>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full px-4 sm:px-8 lg:px-16">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 drop-shadow-lg" style="text-shadow: 3px 3px 6px rgba(0,0,0,0.7);">✨ 바닷속 시간여행, 바다유리 💎</h1>
+            <p class="text-lg sm:text-xl lg:text-2xl text-white max-w-3xl leading-relaxed drop-shadow-md">
+                버려진 유리에서 보물이 탄생하다! 바다 환경을 지키는 업사이클링의 힘
+            </p>
+        </div>
+        <!-- Scroll indicator to guide user -->
+        <div class="scroll-indicator">
+            <span>아래로 스크롤하여 더 알아보기</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Section 1.5: Sea Glass Story - Motivation Webtoon (New Section) -->
+    <section id="sea-glass-story-section" class="section-full bg-gradient-to-br from-teal-50 to-blue-100 text-gray-800">
+        <div class="flex flex-col items-center justify-center p-8 lg:p-16 max-w-7xl mx-auto gap-8">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-teal-700">바다유리 이야기</h2>
+            <p class="text-base sm:text-lg lg:text-xl leading-relaxed mb-8 max-w-3xl text-center">
+                바다유리가 우리에게 들려주는 흥미로운 이야기를 만화로 만나보세요!
+            </p>
+            <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl p-4">
+                <img src="images/webtoon.jpg" alt="Motivation Webtoon about Sea Glass" class="rounded-xl w-full h-auto object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: What is Sea Glass? - Explanation of Sea Glass (PDF Page 2) -->
+    <section id="what-is-seaglass-section" class="section-full bg-gradient-to-br from-blue-50 to-indigo-100 text-gray-800">
+        <div class="flex flex-col lg:flex-row items-center justify-center p-8 lg:p-16 max-w-7xl mx-auto gap-8">
+            <div class="lg:w-1/2 flex justify-center">
+                <img src="images/page1-2.png" alt="Beautiful Sea Glass pieces" class="rounded-2xl shadow-xl w-full max-w-md lg:max-w-full h-auto object-cover">
+            </div>
+            <div class="lg:w-1/2 text-center lg:text-left">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-blue-700">바다유리란?</h2>
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed mb-4">
+                    바다유리란 <span class="font-bold">바닷가에 버려진 유리가 오랜 시간 동안 파도, 자갈, 모래 등에 부딪혀 깎이면서 끝이 부드럽고 둥글게 닳은 유리 조각</span>을 말해요. 매끈매끈하고 둥근 모습 때문에 바다의 보석이라고 불려요.
+                </p>
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed">
+                    바다유리는 날카로운 유리가 오랜 시간에 걸쳐 자연적으로 다듬어진 유리 조각을 말합니다.
+                    버려진 유리병이나 접시 등이 <span class="font-bold">파도와 모래, 자갈에 의해 끊임없이 마모되면서 부드럽고 둥근 형태로 변하고</span>
+                    표면은 서리가 내린 듯한 질감을 띠게 됩니다.
+                    이러한 과정은 매우 느리게 진행되며, 각 바다유리 조각은 독특한 색상과 모양을 가지고 있습니다.
+                </p>
+                <ul class="text-base sm:text-lg lg:text-xl leading-relaxed list-disc list-inside mt-4">
+                    <li>* <span class="text-blue-600 font-semibold">풍화</span> : 바위나 물질이 깨지고 부서지는 과정</li>
+                    <li>* <span class="text-red-600 font-semibold">마모</span> : 물체끼리 부딪혀 표면이 닳는 현상</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Interactive Sea Glass Formation - Mouse interactive experience (PDF Page 3) -->
+    <section id="interactive-seaglass-section" class="section-full bg-gradient-to-b from-blue-200 to-teal-200 text-gray-800 flex flex-col items-center justify-center p-8">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8 text-blue-800 drop-shadow-md">바다유리는 어떻게 만들어질까? (인터랙티브 체험)</h2>
+        <p class="text-base sm:text-lg lg:text-xl leading-relaxed mb-8 max-w-3xl text-center">
+            날카로운 유리 조각이 파도와 모래, 자갈의 힘으로 어떻게 부드러운 바다유리로 변하는지 직접 경험해보세요.
+            아래 그림 위에서 유리를 드래그하여 움직여보세요!
+        </p>
+        <div class="flex flex-col lg:flex-row items-center justify-center p-4 lg:p-8 max-w-7xl mx-auto gap-8">
+            <div class="lg:w-1/3 flex flex-col items-center justify-center text-center">
+                <img src="images/page3-1.png" alt="Glass bottle in sea" class="rounded-2xl shadow-xl w-full max-w-xs h-auto object-cover mb-2">
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed">바다에 유리병이 버려져요.</p>
+            </div>
+            <div class="lg:w-1/3 flex flex-col items-center justify-center">
+                <div class="relative w-full max-w-5xl h-[70vh] rounded-2xl overflow-hidden shadow-2xl bg-blue-100 border-4 border-blue-300">
+                    <canvas id="seaGlassCanvas" class="w-full h-full"></canvas>
+                    <div id="instructionText" class="absolute inset-0 flex items-center justify-center text-xl sm:text-2xl text-blue-700 font-semibold opacity-100 transition-opacity duration-500 pointer-events-none">
+                        유리를 드래그하여 움직여 바다유리를 매끄럽게 만드세요!
+                    </div>
+                </div>
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed mt-2">파도에 흔들리며 모래, 자갈과 부딪히며 점점 닳아져요.</p>
+            </div>
+            <div class="lg:w-1/3 flex flex-col items-center justify-center text-center">
+                <img src="images/page3-3.png" alt="Smooth sea glass on beach" class="rounded-2xl shadow-xl w-full max-w-xs h-auto object-cover mb-2">
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed">둥글고 부드러운 바다유리로 변해요.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Sea Glass is a Trace of Environmental Pollution (PDF Page 4) -->
+    <section id="environmental-impact-section" class="section-full bg-gradient-to-br from-green-50 to-blue-100 text-gray-800">
+        <div class="flex flex-col lg:flex-row-reverse items-center justify-center p-8 lg:p-16 max-w-7xl mx-auto gap-8">
+            <div class="lg:w-1/2 flex justify-center">
+                <img src="images/page4-1.png" alt="Sea glass on beach at sunset" class="rounded-2xl shadow-xl w-full max-w-md lg:max-w-full h-auto object-cover">
+            </div>
+            <div class="lg:w-1/2 text-center lg:text-left">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-green-700 max-w-xl mx-auto">바다유리는 환경오염의 흔적</h2> <!-- Adjusted max-w -->
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed mb-4"> <!-- Adjusted font size -->
+                    바다유리는 예뻐 보이지만, 사실은 <span class="text-red-600 font-bold">해양 오염 문제와 연결</span>되어 있어요.
+                    바다유리는 버려진 유리 쓰레기로, 유리는 썩지 않아서 바다에 오래 남아
+                    해양 생물들을 위험하게 할 수 있답니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Upcycling to Protect the Ocean (PDF Page 5) -->
+    <section id="upcycling-section" class="section-full bg-gradient-to-br from-purple-50 to-pink-100 text-gray-800">
+        <div class="flex flex-col lg:flex-row items-center justify-center p-8 lg:p-16 max-w-7xl mx-auto gap-8">
+            <div class="lg:w-1/2 flex justify-center grid grid-cols-2 gap-4"> <!-- Changed to grid 2x2 -->
+                <img src="images/page5-1.png" alt="Beach with sea glass" class="rounded-xl shadow-lg w-full h-48 object-cover">
+                <img src="images/page5-2.png" alt="Collection of sea glass" class="rounded-xl w-full h-48 object-cover">
+                <img src="images/page5-3.png" alt="Sea glass necklace" class="rounded-xl w-full h-48 object-cover">
+                <img src="images/page5-4.png" alt="Recycle symbol" class="rounded-xl w-full h-48 object-cover">
+            </div>
+            <div class="lg:w-1/2 text-center lg:text-left">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-purple-700 max-w-xl mx-auto">업사이클링으로 바다 지키기</h2> <!-- Adjusted max-w -->
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed mb-4">
+                    <span class="text-red-600 font-bold">업사이클링(Upcycling)</span>이란 <span class="font-bold">재활용할 수 있는 소재에 디자인과 활용성을 더하여 가치를 높이는 일</span>을 말해요.
+                </p>
+                <p class="text-base sm:text-lg lg:text-xl leading-relaxed">
+                    버려진 유리 조각 → 바다유리 → 나만의 목걸이로 재탄생!
+                    이렇게 바다유리를 활용한 업사이클링은 <span class="text-blue-600 font-bold">환경을 보호하고 자원의 낭비를 줄이는 훌륭한 방법</span>입니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: How to Make a Sea Glass Necklace (PDF Pages 6, 7, 8) -->
+    <section id="how-to-make-necklace-section" class="section-full bg-gradient-to-br from-indigo-50 to-blue-200 text-gray-800">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8 text-indigo-700 drop-shadow-md">바다유리 목걸이 만드는 방법</h2>
+        <div class="flex flex-col gap-12 p-8 max-w-4xl mx-auto">
+            <!-- Step 1 -->
+            <div class="flex flex-col lg:flex-row items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="lg:w-1/3 flex justify-center">
+                    <img src="images/page6-1.png" alt="Wire wrapping step 1" class="rounded-xl w-full h-auto object-cover">
+                </div>
+                <div class="lg:w-2/3 text-center lg:text-left">
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-blue-600">1. 칼라 공예 철사로 고리 만들기</h3>
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        칼라 공예 철사를 반으로 접고, 가운데 부분을 3~4번 돌려 고리를 만들어 주세요.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex flex-col lg:flex-row-reverse items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="lg:w-1/3 flex justify-center">
+                    <img src="images/page6-2.png" alt="Wire wrapping step 2" class="rounded-xl w-full h-auto object-cover">
+                </div>
+                <div class="lg:w-2/3 text-center lg:text-left"> <!-- Changed to lg:text-left -->
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-purple-600">2. 바다유리 테두리 감싸기</h3>
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        고리를 가운데 기준으로 바다유리의 테두리를 칼라 공예 철사로 감싸고 끝부분을 2~3번 꼬아주세요.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex flex-col lg:flex-row items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="lg:w-1/3 flex justify-center">
+                    <img src="images/page6-3.png" alt="Wire wrapping step 3" class="rounded-xl w-full h-auto object-cover">
+                </div>
+                <div class="lg:w-2/3 text-center lg:text-left">
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-pink-600">3. 바다유리에 자유롭게 감기</h3>
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        칼라 공예 철사의 2/3 정도를 바다유리에 자유롭게 감아주세요.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex flex-col lg:flex-row-reverse items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="lg:w-1/3 flex justify-center">
+                    <img src="images/page6-4.png" alt="Wire wrapping step 4" class="rounded-xl w-full h-auto object-cover">
+                </div>
+                <div class="lg:w-2/3 text-center lg:text-left"> <!-- Changed to lg:text-left -->
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-teal-600">4. 남은 철사로 윗부분 감아주기</h3>
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        칼라 공예 철사의 남은 1/3 부분을 고리 윗부분에 둥글게 감아주세요.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="flex flex-col lg:flex-row items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="lg:w-1/3 flex justify-center">
+                    <img src="images/page6-5.png" alt="Wire wrapping step 5" class="rounded-xl w-full h-auto object-cover">
+                </div>
+                <div class="lg:w-2/3 text-center lg:text-left">
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-blue-600">5. 철사 끝부분 처리</h3>
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        칼라 공예 철사의 끝부분을 하드스틱을 이용해 둥글게 구부리고 안쪽으로 넣어주세요.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="flex flex-col lg:flex-row-reverse items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="lg:w-1/3 flex justify-center">
+                    <img src="images/page6-6.png" alt="Wire wrapping step 6" class="rounded-xl w-full h-auto object-cover">
+                </div>
+                <div class="lg:w-2/3 text-center lg:text-left"> <!-- Changed to lg:text-left -->
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-purple-600">6. 바다유리 고정</h3>
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        하드스틱을 이용해 공예 철사를 눌러 바다유리가 고정될 수 있도록 해주세요.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="flex flex-col lg:flex-row items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="lg:w-1/3 flex justify-center">
+                    <img src="images/page6-7.png" alt="Attach string" class="rounded-xl w-full h-auto object-cover">
+                </div>
+                <div class="lg:w-2/3 text-center lg:text-left">
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-pink-600">7. 면 끈 연결</h3>
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        끝을 묶은 면 끈의 가운데 부분을 공예 철사 고리에 끼우고 면 끈의 가운데 부분으로 매듭을 꺼내 고정해주세요.
+                    </p>
+                </div>
+            </div>
+            <!-- Step 8: Completion -->
+            <div class="flex flex-col items-center gap-8 bg-white p-6 rounded-2xl shadow-lg">
+                <div class="w-full flex justify-center">
+                    <img src="images/page6-8.png" alt="Completed sea glass necklaces" class="rounded-xl w-full max-w-sm h-auto object-cover">
+                </div>
+                <h3 class="text-2xl sm:text-3xl font-bold mb-3 text-teal-600">8. 탄소중립 바다유리 목걸이 완성!</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Protect the Ocean & Quiz (PDF Page 9 & Quiz Link) -->
+    <section id="protect-ocean-section" class="section-full bg-blue-700 text-white flex flex-col items-center justify-center p-8">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 drop-shadow-md">함께 바다를 지켜요!</h2>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8 w-full max-w-4xl">
+            <img src="images/saveearth.png" alt="Superheroes protecting Earth" class="rounded-xl shadow-lg w-full sm:w-1/3 h-auto object-cover">
+            <ul class="text-left text-xs sm:text-sm lg:text-base leading-relaxed list-disc list-inside space-y-2 sm:w-2/3">
+                <li>바다에 쓰레기 버리지 않기</li>
+                <li>쓰레기를 줍고 깨끗하게 유지해요</li>
+                <li>쓰레기도 멋지게 다시 사용하기</li>
+                <li>업사이클링을 친구들에게 알려주기</li>
+                <li>모두 함께 꾸준히 노력하기</li>
+            </ul>
+        </div>
+        
+        <h3 class="text-2xl sm:text-3xl font-bold mb-4 drop-shadow-md">바다유리 퀴즈 풀어보기!</h3>
+        <div class="w-full max-w-4xl h-[90vh] bg-white rounded-xl shadow-lg overflow-hidden">
+            <iframe src="https://quizn.show/quz/play/tryPinForm.do?showSeq=669301" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <p class="mt-8 text-sm opacity-80">&copy; 2025. 여수초등과학교과연구회. All rights reserved.</p>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('seaGlassCanvas');
+            const ctx = canvas.getContext('2d');
+            const instructionText = document.getElementById('instructionText');
+
+            let isDragging = false;
+            let glassX, glassY; // Current position of the glass center
+            let offsetX, offsetY; // Offset from mouse/touch to glass center
+            let smoothingProgress = 0; // Accumulates interaction for smoothing
+            const maxInteractionNeeded = 10000; // Total "interaction units" needed for full smoothing
+            const maxSmoothingIterations = 30; // Max number of smoothing iterations to apply
+            const initialRoughness = 0.6; // Increased initial roughness for sharper edges
+
+            let initialShapePoints = []; // Stores the initial jagged shape points
+
+            /**
+             * Generates a set of points for a jagged, irregular polygon.
+             * This represents the initial sharp glass shard.
+             * @param {number} width - The width of the canvas.
+             * @param {number} height - The height of the canvas.
+             * @returns {Array<Object>} An array of point objects {x, y}.
+             */
+            function generateJaggedShape(width, height) {
+                const points = [];
+                const numPoints = 12; // More points for initial jaggedness
+                const roughness = initialRoughness; // How jagged it is (percentage of size)
+                const radius = Math.min(width, height) * 0.2; // Base radius for the shape, slightly smaller
+
+                // Generate points around a circle, adding randomness for jaggedness
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = (i / numPoints) * Math.PI * 2;
+                    const baseRadius = radius + (Math.random() * roughness * radius) - (roughness * radius / 2);
+                    points.push({
+                        x: Math.cos(angle) * baseRadius,
+                        y: Math.sin(angle) * baseRadius
+                    });
+                }
+                return points;
+            }
+
+            /**
+             * Smooths a polygon by averaging adjacent vertices for a given number of iterations.
+             * @param {Array<Object>} points - An array of point objects representing the polygon.
+             * @param {number} iterations - The number of times to apply the smoothing algorithm.
+             * @returns {Array<Object>} The smoothed array of point objects.
+             */
+            function smoothPolygon(points, iterations) {
+                let smoothedPoints = [...points]; // Start with a copy of the original points
+                for (let iter = 0; iter < iterations; iter++) {
+                    const newPoints = [];
+                    for (let i = 0; i < smoothedPoints.length; i++) {
+                        const p1 = smoothedPoints[i]; // Current point
+                        const p2 = smoothedPoints[(i + 1) % smoothedPoints.length]; // Next point (wraps around)
+                        const p0 = smoothedPoints[(i - 1 + smoothedPoints.length) % smoothedPoints.length]; // Previous point (wraps around)
+                        
+                        // Simple averaging of current point and its two neighbors
+                        const newX = (p0.x + p1.x + p2.x) / 3;
+                        const newY = (p0.y + p1.y + p2.y) / 3;
+                        newPoints.push({ x: newX, y: newY });
+                    }
+                    smoothedPoints = newPoints; // Update points for the next iteration
+                }
+                return smoothedPoints; // Return the final smoothed points
+            }
+
+            /**
+             * Draws the sea glass and its environment on the canvas.
+             */
+            function drawSeaGlassAndEnvironment() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
+
+                // Draw the seabed/pebbles environment
+                drawEnvironment();
+
+                // Calculate the current smoothing factor based on accumulated progress
+                const smoothingFactor = Math.min(1, smoothingProgress / maxInteractionNeeded);
+                const iterations = Math.floor(smoothingFactor * maxSmoothingIterations);
+                const smoothedPoints = smoothPolygon(initialShapePoints, iterations);
+
+                // Draw the sea glass
+                ctx.save(); // Save context state before applying transformations
+                
+                // Translate the canvas to the glass's current position
+                ctx.translate(glassX, glassY);
+
+                ctx.beginPath();
+                // Draw the shape relative to the translated origin (glassX, glassY)
+                ctx.moveTo(smoothedPoints[0].x, smoothedPoints[0].y);
+                for (let i = 1; i < smoothedPoints.length; i++) {
+                    ctx.lineTo(smoothedPoints[i].x, smoothedPoints[i].y);
+                }
+                ctx.closePath();
+
+                // Create a linear gradient for the glass fill color, changing opacity with smoothness
+                const gradient = ctx.createLinearGradient(-canvas.width/2, -canvas.height/2, canvas.width/2, canvas.height/2); // Relative to translated origin
+                gradient.addColorStop(0, `rgba(135, 206, 250, ${0.7 + smoothingFactor * 0.3})`); // Light blue, becomes more opaque
+                gradient.addColorStop(0.5, `rgba(70, 130, 180, ${0.7 + smoothingFactor * 0.3})`); // Steel blue
+                gradient.addColorStop(1, `rgba(0, 0, 128, ${0.7 + smoothingFactor * 0.3})`); // Navy blue, becomes more opaque
+                ctx.fillStyle = gradient;
+                ctx.fill(); // Fill the shape
+
+                // Set stroke style, becoming more prominent and thicker when smooth
+                ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 + smoothingFactor * 0.5})`; // White stroke
+                ctx.lineWidth = 2 + smoothingFactor * 2; // Line width increases with smoothness
+                ctx.stroke(); // Draw the stroke
+
+                // Apply a subtle frosted effect using blur filter and shadow based on smoothingFactor
+                ctx.filter = `blur(${Math.max(0, 5 - smoothingFactor * 5)}px)`; // Blurs less as it gets smoother
+                ctx.shadowColor = `rgba(255, 255, 255, ${smoothingFactor * 0.8})`; // Shadow becomes more visible
+                ctx.shadowBlur = 10 * smoothingFactor; // Shadow blur increases with smoothness
+
+                ctx.restore(); // Restore context state
+            }
+
+            /**
+             * Draws a simple representation of pebbles and waves on the canvas background.
+             */
+            function drawEnvironment() {
+                // Draw a sandy/pebbly bottom
+                ctx.fillStyle = '#C2B280'; // Sandy color
+                ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+
+                // Draw some abstract pebbles
+                for (let i = 0; i < 30; i++) { // More pebbles
+                    const x = Math.random() * canvas.width;
+                    const y = canvas.height * 0.7 + Math.random() * (canvas.height * 0.3);
+                    const radius = 5 + Math.random() * 15; // Larger pebbles
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(100, 100, 100, ${0.5 + Math.random() * 0.4})`; // Greyish pebbles, more opaque
+                    ctx.fill();
+                }
+
+                // Draw some abstract wave lines
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; // White transparent waves, slightly more opaque
+                ctx.lineWidth = 1.5; // Thicker lines
+                for (let i = 0; i < 7; i++) { // More waves
+                    ctx.beginPath();
+                    const startY = canvas.height * 0.1 + i * (canvas.height * 0.07); // Waves spread out more
+                    ctx.moveTo(0, startY + Math.random() * 15 - 7.5); // More randomness in wave height
+                    for (let x = 0; x <= canvas.width; x += 30) { // Longer wave segments
+                        ctx.lineTo(x, startY + Math.sin(x * 0.03 + i) * 8 + (Math.random() * 15 - 7.5)); // Larger amplitude
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            /**
+             * Resizes the canvas to match its CSS dimensions and redraws the sea glass.
+             * This function is crucial for making the canvas responsive.
+             */
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                // Regenerate initial shape points to adapt to new canvas size
+                initialShapePoints = generateJaggedShape(canvas.width, canvas.height);
+                // Set initial glass position to center of the canvas
+                glassX = canvas.width / 2;
+                glassY = canvas.height / 2;
+                drawSeaGlassAndEnvironment(); // Redraw with environment
+            }
+
+            // Helper to check if a point is inside the current polygon
+            function isPointInPolygon(point, polygon) {
+                let x = point.x, y = point.y;
+                let inside = false;
+                for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                    let xi = polygon[i].x, yi = polygon[i].y;
+                    let xj = polygon[j].x, yj = polygon[j].y;
+                    let intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    if (intersect) inside = !inside;
+                }
+                return inside;
+            }
+
+            // --- Event Listeners ---
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+
+            canvas.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                // Check if click is on the glass (simplified for a non-rotated object)
+                const currentSmoothingFactor = Math.min(1, smoothingProgress / maxInteractionNeeded);
+                const iterations = Math.floor(currentSmoothingFactor * maxSmoothingIterations);
+                const currentGlassShape = smoothPolygon(initialShapePoints, iterations).map(p => ({
+                    x: p.x + glassX, // Adjust to global canvas coordinates
+                    y: p.y + glassY
+                }));
+
+                if (isPointInPolygon({ x: mouseX, y: mouseY }, currentGlassShape)) {
+                    isDragging = true;
+                    canvas.classList.add('grabbing');
+                    offsetX = mouseX - glassX;
+                    offsetY = mouseY - glassY;
+                    lastMouseX = mouseX;
+                    lastMouseY = mouseY;
+                    // Hide instruction text on the first interaction
+                    if (instructionText.style.opacity === '100') {
+                        instructionText.style.opacity = '0';
+                        setTimeout(() => instructionText.style.display = 'none', 500); // Remove after transition
+                    }
+                }
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+
+                    // Update glass position
+                    glassX = mouseX - offsetX;
+                    glassY = mouseY - offsetY;
+
+                    // Calculate distance moved for smoothing
+                    const dx = mouseX - lastMouseX;
+                    const dy = mouseY - lastMouseY;
+                    smoothingProgress += Math.sqrt(dx * dx + dy * dy);
+                    smoothingProgress = Math.min(smoothingProgress, maxInteractionNeeded);
+
+                    lastMouseX = mouseX;
+                    lastMouseY = mouseY;
+
+                    drawSeaGlassAndEnvironment();
+                }
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDragging = false;
+                canvas.classList.remove('grabbing');
+            });
+
+            canvas.addEventListener('mouseleave', () => { // Stop dragging if mouse leaves canvas
+                if (isDragging) {
+                    isDragging = false;
+                    canvas.classList.remove('grabbing');
+                }
+            });
+
+
+            // Touch events
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    const rect = canvas.getBoundingClientRect();
+                    const touch = e.touches[0];
+                    const touchX = touch.clientX - rect.left;
+                    const touchY = touch.clientY - rect.top;
+
+                    const currentSmoothingFactor = Math.min(1, smoothingProgress / maxInteractionNeeded);
+                    const iterations = Math.floor(currentSmoothingFactor * maxSmoothingIterations);
+                    const currentGlassShape = smoothPolygon(initialShapePoints, iterations).map(p => ({
+                        x: p.x + glassX, // Adjust to global canvas coordinates
+                        y: p.y + glassY
+                    }));
+
+                    if (isPointInPolygon({ x: touchX, y: touchY }, currentGlassShape)) {
+                        isDragging = true;
+                        canvas.classList.add('grabbing');
+                        offsetX = touchX - glassX;
+                        offsetY = touchY - glassY;
+                        lastMouseX = touchX;
+                        lastMouseY = touchY;
+                        if (instructionText.style.opacity === '100') {
+                            instructionText.style.opacity = '0';
+                            setTimeout(() => instructionText.style.display = 'none', 500);
+                        }
+                        e.preventDefault(); // Prevent scrolling
+                    }
+                }
+            }, { passive: false });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches.length === 1) {
+                    const rect = canvas.getBoundingClientRect();
+                    const touch = e.touches[0];
+                    const touchX = touch.clientX - rect.left;
+                    const touchY = touch.clientY - rect.top;
+
+                    glassX = touchX - offsetX;
+                    glassY = touchY - offsetY;
+
+                    const dx = touchX - lastMouseX;
+                    const dy = touchY - lastMouseY;
+                    smoothingProgress += Math.sqrt(dx * dx + dy * dy);
+                    smoothingProgress = Math.min(smoothingProgress, maxInteractionNeeded);
+
+                    lastMouseX = touchX;
+                    lastMouseY = touchY;
+
+                    drawSeaGlassAndEnvironment();
+                    e.preventDefault(); // Prevent scrolling
+                }
+            }, { passive: false });
+
+            canvas.addEventListener('touchend', () => {
+                isDragging = false;
+                canvas.classList.remove('grabbing');
+            });
+
+            // Redraw canvas on window resize to maintain responsiveness
+            window.addEventListener('resize', () => {
+                resizeCanvas(); // Recalculate dimensions and redraw
+            });
+
+            // Initial draw when the DOM is fully loaded
+            resizeCanvas(); // Set initial canvas size and draw the initial shape
+        });
+
+        // Smooth scrolling for navigation
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
